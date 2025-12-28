@@ -14,7 +14,7 @@ const Sidebar = ({ showAuthors = true }) => {
             .then(res => setCategories(res.data.results || res.data))
             .catch(err => console.error(err));
 
-        // Fetch Users (Assuming /api/v1/users/ exists and is public)
+        // Fetch Users
         axios.get(`${API_BASE_URL}/api/v1/users/`)
             .then(res => setUsers(res.data.results || res.data))
             .catch(err => console.error(err));

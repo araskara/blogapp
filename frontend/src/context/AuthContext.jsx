@@ -21,10 +21,6 @@ export const AuthProvider = ({ children }) => {
                     if (decoded.exp < currentTime) {
                         logout();
                     } else {
-                        // We can decode user info from token if available, or just set true/some basics
-                        // For simplicity, let's assume we are logged in. 
-                        // If we need user details (name, avatar), we might need an endpoint /api/v1/me/
-                        // For now, let's just store the username from the token or a placeholder
                         setUser({
                             id: decoded.user_id,
                             username: decoded.username || 'User'
@@ -58,7 +54,7 @@ export const AuthProvider = ({ children }) => {
             setUser({
                 id: decoded.user_id,
                 username: username
-            }); // or decoded info
+            });
 
             // Set default axios header
             axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;

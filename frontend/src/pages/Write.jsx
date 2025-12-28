@@ -20,7 +20,7 @@ const Write = () => {
     const isEditMode = !!editSlug;
 
     const navigate = useNavigate();
-    const { user } = useAuth(); // Import user
+    const { user } = useAuth();
 
     const editor = useEditor({
         extensions: [
@@ -39,20 +39,17 @@ const Write = () => {
 
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
     useEffect(() => {
-        // Fetch Categories
         axios.get(`${API_BASE_URL}/api/v1/categories/`)
             .then(res => setCategories(res.data.results || res.data))
             .catch(err => console.error("Failed to fetch categories", err));
 
-        // If Edit Mode, Fetch Post
         if (isEditMode) {
-            // Correct endpoint: /api/v1/{slug}/ (not /posts/)
             axios.get(`${API_BASE_URL}/api/v1/${editSlug}/`)
                 .then(res => {
                     const post = res.data;
                     setTitle(post.title);
                     setSlug(post.slug);
-                    setSelectedCategory(post.categories[0]?.id || ''); // Assuming single category for simplicity
+                    setSelectedCategory(post.categories[0]?.id || '');
                     if (editor) {
                         editor.commands.setContent(post.body);
                     }
@@ -78,9 +75,8 @@ const Write = () => {
         formData.append('title', title);
         formData.append('body', editor.getText());
 
-        // Always send slug, even if empty, to ensure backend treats it as 'present but blank'
         formData.append('slug', slug || '');
-        if (selectedCategory) formData.append('category_ids', selectedCategory); // Serializer now expects 'category_ids'
+        if (selectedCategory) formData.append('category_ids', selectedCategory);
 
         if (coverImage) {
             formData.append('image', coverImage);
@@ -89,10 +85,8 @@ const Write = () => {
         try {
             let response;
             if (isEditMode) {
-                // Update (PUT/PATCH) to root endpoint: /api/v1/{slug}/
                 response = await axios.patch(`${API_BASE_URL}/api/v1/${editSlug}/`, formData);
             } else {
-                // Create (POST) to root endpoint: /api/v1/
                 response = await axios.post(`${API_BASE_URL}/api/v1/`, formData);
             }
             navigate(`/posts/${response.data.slug || editSlug}`); // Redirect to post
