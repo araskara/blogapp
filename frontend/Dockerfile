@@ -20,6 +20,7 @@ ENV PORT=80
 
 # Add nginx config template to handle React Router and dynamic PORT
 # Nginx image automatically substitutes vars in /etc/nginx/templates/*.template
+RUN mkdir -p /etc/nginx/templates
 RUN echo 'server { \
     listen ${PORT}; \
     location / { \
